@@ -169,4 +169,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# .DS_Store
 .DS_Store
+
+# virtual environment
+venv/
+ENV/
+.env
+ete-treemaker-env/
