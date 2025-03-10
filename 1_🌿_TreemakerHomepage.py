@@ -22,7 +22,7 @@ from datetime import datetime
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
-st.title("Treemaker🌿")
+st.title("Cohn Treemaker Web Tool")
 
 # defining parser
 df = pd.DataFrame(
