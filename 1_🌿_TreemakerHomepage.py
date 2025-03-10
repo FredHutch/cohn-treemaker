@@ -24,6 +24,22 @@ from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
 st.title("Cohn Treemaker Web Tool")
 
+st.markdown("This tool creates phylogenetic trees from sequencing data. It searches for clonal sequences and collapses them into stacked nodes for visualizations automatically.")
+st.markdown("""
+    To begin, please update the parser dataframe to fit the type of sequences you will be working with. 
+    For each given sequence type, include a string parser that is included in the sequence name which differentiates 
+    it from other sequence types. Provide a color hexademical to be associated with the given sequence type. For Example:
+      
+    *Sequence Type = Rebound, Parser String = rbd, Color = #FFA600*""")
+st.markdown("""   
+    Here the parser string "rbd" can identify sequences that belong to the Sequence Type "Rebound".
+    Once the parser table is updated correctly, please upload your newick file containing these sequences. 
+    The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 
+    """)
+
+# To Do: upon start, search for uploaded_tree.tre in current dir, or tree-file.* in data/ and clear
+
+st.header("Sequence Parser")
 # defining parser
 df = pd.DataFrame(
     [
@@ -56,6 +72,7 @@ st.caption("Parser Table")
 if edited_df.isnull().any().any():
     st.error("Parser table should not contain any missing values!")
 
+st.header("Tree Upload")
 # upload file
 uploaded_file = st.file_uploader("Please upload your newick file", 
                                  type=["tre", "nwk", "tree", "newick", "nhx"],
@@ -75,9 +92,10 @@ if uploaded_file:
     subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv], check=True)
 
     # display tree
-    if os.path.exists("tree-file.png"):
-        st.image("tree-file.png")
-        with open("tree-file.pdf", "rb") as file:
+    if os.path.exists("data/tree-file.png"):
+        st.header("Tree Visualization")
+        st.image("data/tree-file.png")
+        with open("data/tree-file.pdf", "rb") as file:
             today_date = datetime.now().strftime("%Y-%m-%d")
             download_filename = f"tree-{today_date}.pdf"
             st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")

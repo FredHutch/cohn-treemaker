@@ -167,8 +167,8 @@ def render_tree(treefile, df_csv):
     ts.show_leaf_name = False
 
     # saving the plots as both a png for visualizing and a pdf for downloading
-    t.render("tree-file.pdf", tree_style=ts, w=4, dpi=200, units='in')
-    t.render("tree-file.png", tree_style=ts, w=4, dpi=200, units='in')
+    t.render("data/tree-file.pdf", tree_style=ts, w=4, dpi=200, units='in')
+    t.render("data/tree-file.png", tree_style=ts, w=4, dpi=200, units='in')
 
 
 if __name__ == "__main__":
