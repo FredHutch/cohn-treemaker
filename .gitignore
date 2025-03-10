@@ -178,3 +178,6 @@ venv/
 ENV/
 .env
 ete-treemaker-env/
+
+# ignoring Tree files
+*.tre
