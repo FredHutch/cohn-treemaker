@@ -1,9 +1,23 @@
+"""
+TreemakerHomepage.py
+    This is the main landing page of the Treemaker Web App.
+    It accepts the tree file from the user and the parser
+    dataframe.
+    This file passes the files to tree-render-functions.py
+    which is run to generate the tree ans presents the 
+    saved png.
+    It then offers the user a choice to download the generated tree
+    file.
+    For more information see:
+    https://github.com/walkerazam/cohn-treemaker
+"""
 import streamlit as st
 import subprocess
 import sys
 import os
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
@@ -63,5 +77,10 @@ if uploaded_file:
     # display tree
     if os.path.exists("tree-file.png"):
         st.image("tree-file.png")
+        with open("tree-file.pdf", "rb") as file:
+            today_date = datetime.now().strftime("%Y-%m-%d")
+            download_filename = f"tree-{today_date}.pdf"
+            st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")
     else: 
         st.error("Error in creatng tree. tree-file.png not found.")
+
