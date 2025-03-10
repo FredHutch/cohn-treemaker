@@ -181,3 +181,5 @@ ete-treemaker-env/
 
 # ignoring Tree files
 *.tre
+data/*.png
+data/*.pdf 
