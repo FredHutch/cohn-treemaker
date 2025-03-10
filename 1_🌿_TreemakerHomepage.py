@@ -26,16 +26,10 @@ st.title("Cohn Treemaker Web Tool")
 
 st.markdown("This tool creates phylogenetic trees from sequencing data. It searches for clonal sequences and collapses them into stacked nodes for visualizations automatically.")
 st.markdown("""
-    To begin, please update the parser dataframe to fit the type of sequences you will be working with. 
-    For each given sequence type, include a string parser that is included in the sequence name which differentiates 
-    it from other sequence types. Provide a color hexademical to be associated with the given sequence type. For Example:
-    
-    | Sequence Type    | Parser String | Color |
-    | -------- | ------- | ------- |
-    | Rebound  | rbd   |  #FFA600 |       
-    """)
-st.markdown("""   
-    Here the parser string "rbd" can identify sequences that belong to the Sequence Type "Rebound".
+    To begin, please update the parser dataframe to fit the type of sequences you will be working with.
+    For repeated use of a saved parser, you can also upload a CSV containing the information too using the
+    CSV Upload tab.
+            
     Once the parser table is updated correctly, please upload your newick file containing these sequences. 
     The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 
     """)
@@ -43,6 +37,7 @@ st.markdown("""
 # To Do: upon start, search for uploaded_tree.tre in current dir, or tree-file.* in data/ and clear
 
 st.header("Sequence Parser")
+tab1, tab2 = st.tabs(["Online Input", "CSV Upload"])
 # defining parser
 df = pd.DataFrame(
     [
@@ -52,28 +47,50 @@ df = pd.DataFrame(
         {"SeqType": "No IgG Outgrowth", "Parser": "STB", "Color": "#2B488C"}
     ]
 )
-edited_df = st.data_editor(
-    df,
-    column_config={
-        "SeqType": st.column_config.TextColumn(
-            "Sequence Type",
-            help="Type of Sequence",
-        ),
-        "Parser": st.column_config.TextColumn(
-            "Parser String",
-            help="String to separate sequence type from sequence name",
-        ),
-        "Color": st.column_config.TextColumn(
-            "Color",
-            help="Hexadecimal color code",
-        )
-    },
-    hide_index=True, num_rows="dynamic"
-)
-st.caption("Parser Table")
+with tab1:
+    edited_df = st.data_editor(
+        df,
+        column_config={
+            "SeqType": st.column_config.TextColumn(
+                "Sequence Type",
+                help="Type of Sequence",
+            ),
+            "Parser": st.column_config.TextColumn(
+                "Parser String",
+                help="String to separate sequence type from sequence name",
+            ),
+            "Color": st.column_config.TextColumn(
+                "Color",
+                help="Hexadecimal color code",
+            )
+        },
+        hide_index=True, num_rows="dynamic"
+    )
+    st.caption("Parser Table")
 
-if edited_df.isnull().any().any():
-    st.error("Parser table should not contain any missing values!")
+    if edited_df.isnull().any().any():
+        st.error("Parser table should not contain any missing values!")
+
+with tab2:
+    st.markdown("""You can upload your custom parser as CSV. Please ensure correct column headers and
+                no missing values are present. To download template for the CSV, check
+                the 'About Page'. """)
+    # Option to upload CSV
+    # upload file
+    parser_upload = st.file_uploader("Upload Parser as CSV:", 
+                                    type=["csv"],
+                                    accept_multiple_files = False)
+    st.caption("Parser Upload")
+    # read in uploaded parser
+    if parser_upload:
+        edited_df = pd.read_csv(parser_upload)
+        if edited_df.isnull().any().any():
+            st.error("Missing values detected. Parser table should not contain any missing values. Please re-upload corrected file.")
+        else:
+            st.success("Parser file successfully loaded!")
+
+# Add Shape Data
+
 
 st.header("Tree Upload")
 # upload file
