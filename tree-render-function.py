@@ -1,3 +1,13 @@
+"""
+tree-render-functions.py
+    This python file accepts a tree file and a 
+    dataframe as a csv and generates a tree
+    visualization by collapsing clones.
+    Its saves the files as a PNG/PDF that is
+    used by the main app. 
+    For more information see:
+    https://github.com/walkerazam/cohn-treemaker
+"""
 import pandas as pd
 import numpy as np
 import sys
