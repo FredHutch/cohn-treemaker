@@ -29,8 +29,11 @@ st.markdown("""
     To begin, please update the parser dataframe to fit the type of sequences you will be working with. 
     For each given sequence type, include a string parser that is included in the sequence name which differentiates 
     it from other sequence types. Provide a color hexademical to be associated with the given sequence type. For Example:
-      
-    *Sequence Type = Rebound, Parser String = rbd, Color = #FFA600*""")
+    
+    | Sequence Type    | Parser String | Color |
+    | -------- | ------- | ------- |
+    | Rebound  | rbd   |  #FFA600 |       
+    """)
 st.markdown("""   
     Here the parser string "rbd" can identify sequences that belong to the Sequence Type "Rebound".
     Once the parser table is updated correctly, please upload your newick file containing these sequences. 
