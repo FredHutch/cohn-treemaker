@@ -110,7 +110,7 @@ st.subheader("Shape Classification")
 # circle - default, square - set to parse
 on = st.toggle("Multiple Shapes")
 st.markdown("""
-            Please specify what type of sequences to set as square shaped nodes. 
+            You can specify what type of sequences to set as square shaped nodes. 
             Rest of the sequences are set by default as circles.""")
 if on:
     shape_df = pd.DataFrame(

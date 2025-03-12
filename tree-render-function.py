@@ -220,7 +220,7 @@ def render_tree(treefile, df_csv, class_csv=None):
 
 
 if __name__ == "__main__":
-    # Get the file path from the command-line arguments
+    # Get the file path from the subprocess command-line arguments
     if len(sys.argv) > 3:
         treefile = sys.argv[1]
         df_csv = sys.argv[2]
