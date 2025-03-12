@@ -18,7 +18,17 @@ RUN git clone https://github.com/walkerazam/cohn-treemaker.git
 
 WORKDIR /app/cohn-treemaker/
 
-RUN pip3 install -r requirements.txt
+# RUN pip install PyQt5
+
+RUN pip install git+https://github.com/etetoolkit/ete.git@3.1.3
+
+RUN pip install streamlit
+
+RUN pip install pandas
+
+RUN pip install numpy
+
+# RUN pip3 install -r requirements.txt
 
 EXPOSE 8501
 
