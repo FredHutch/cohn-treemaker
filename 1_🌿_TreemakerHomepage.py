@@ -20,8 +20,11 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
-from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+# from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
+# from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
 st.title("Cohn Treemaker Web Tool")
 
