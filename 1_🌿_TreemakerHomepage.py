@@ -52,16 +52,16 @@ with tab1:
         df,
         column_config={
             "SeqType": st.column_config.TextColumn(
-                "Sequence Type",
-                help="Type of Sequence",
+                "Sequence Characteristic",
+                help="Type of Sequence", required=True
             ),
             "Parser": st.column_config.TextColumn(
                 "Parser String",
-                help="String to separate sequence type from sequence name",
+                help="String to separate sequence type from sequence name", required=True
             ),
             "Color": st.column_config.TextColumn(
                 "Color",
-                help="Hexadecimal color code",
+                help="Hexadecimal color code", required=True
             )
         },
         hide_index=True, num_rows="dynamic"
@@ -89,8 +89,39 @@ with tab2:
         else:
             st.success("Parser file successfully loaded!")
 
-# Add Shape Data
-
+# Add Shape Data - classification
+st.subheader("Shape Classification")
+# circle - default, square - set to parse
+on = st.toggle("Multiple Shapes")
+st.markdown("""
+            Please specify what type of sequences to set as square shaped nodes. 
+            Rest of the sequences are set by default as circles.""")
+if on:
+    shape_df = pd.DataFrame(
+        [
+            {"Classification": "Type 1", "Parser": "(Edit)", "Shape": "Square"},
+            {"Classification": "Type 2", "Parser": "Default (Do Not Edit)", "Shape": "Circle"}
+        ]
+    )
+    edited_shape = st.data_editor(
+        shape_df,
+        column_config={
+            "Classification": st.column_config.TextColumn(
+                "Sequence Characteristic",
+                help="Sequence characteristic classifications", required=True
+            ),
+            "Parser": st.column_config.TextColumn(
+                "Parser String",
+                help="String to separate square classification from circles", required=True
+            ),
+            "Shape": st.column_config.TextColumn(
+                "Shape",
+                help="Node Shape",
+            )
+        },
+        disabled=["Shape"],
+        hide_index=True, num_rows="fixed"
+    )
 
 st.header("Tree Upload")
 # upload file
@@ -108,8 +139,13 @@ if uploaded_file:
     # serializing df to csv
     df_csv = edited_df.to_csv(index=False)
 
-    # run tree-render-function.py and pass the temp tree file as an argument
-    subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv], check=True)
+    if on:
+        class_csv = edited_shape.to_csv(index=False)
+        # run tree-render-function.py and pass the temp tree file as an argument
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, class_csv], check=True)
+    else:
+        # run tree-render-function.py and pass the temp tree file as an argument
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv], check=True)
 
     # display tree
     if os.path.exists("data/tree-file.png"):

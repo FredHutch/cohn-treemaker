@@ -17,11 +17,20 @@ import re
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
-def render_tree(treefile, df_csv):
+def render_tree(treefile, df_csv, class_csv=None):
     # Reading in newick tree file 
     t = Tree(treefile) # Tree not PhyloTree!
     # Deserialize the parser df DataFrame
     parser_df = pd.read_csv(StringIO(df_csv))
+
+    if class_csv is not None:
+        class_df = pd.read_csv(StringIO(class_csv))
+        classification_default = class_df.loc[1, "Classification"] # circle
+        classification_alternate = class_df.loc[0, "Classification"] # square
+        class_parser = class_df.loc[0, "Parser"] # parser for squares
+    else:
+        classification_default = "default"
+        classification_alternate = "alternate"
 
     # Midpoint rooting tree
     midpoint = t.get_midpoint_outgroup()
@@ -32,7 +41,15 @@ def render_tree(treefile, df_csv):
 
     # annotating Sequence Type
     for leaf in t.iter_leaves():
-        leaf_name = leaf.name # get leafe name
+        leaf_name = leaf.name # get leaf name
+        if class_csv is not None:
+            leaf.add_feature("Classification", classification_default)
+            if re.search(class_parser, leaf_name):
+                leaf.add_feature("Classification", classification_alternate)
+            else:
+                leaf.add_feature("Classification", classification_default)
+        else:
+            leaf.add_feature("Classification", classification_default)
         found_match = False # check for is a parser was matched
         for index, row in parser_df.iterrows():
             # check for parser in leaf name
@@ -104,11 +121,19 @@ def render_tree(treefile, df_csv):
     # Setting node style
     def set_seqtype_color(node):
         if "SeqType" in node.features:
-            nstyle = NodeStyle()
-            nstyle["fgcolor"] = seqtype_cmap[node.SeqType]
-            nstyle["size"] = 8
-            nstyle["hz_line_width"] = 2
-            node.set_style(nstyle) 
+            if node.Classification == classification_default:
+                nstyle = NodeStyle()
+                nstyle["fgcolor"] = seqtype_cmap[node.SeqType]
+                nstyle["size"] = 8
+                nstyle["hz_line_width"] = 2
+                node.set_style(nstyle) 
+            elif node.Classification == classification_alternate:
+                nstyle = NodeStyle()
+                nstyle["shape"] = "square"
+                nstyle["fgcolor"] = seqtype_cmap[node.SeqType]
+                nstyle["size"] = 6
+                nstyle["hz_line_width"] = 2
+                node.set_style(nstyle) 
     def make_branches_bigger(node, new_size):
         node.img_style["size"] = 0
         node.img_style["hz_line_width"] = new_size # Change the horizotal lines stroke size
@@ -121,25 +146,42 @@ def render_tree(treefile, df_csv):
     # plotting entire tree
     ts = TreeStyle()
     #ts.show_leaf_name = False
-
+    
     def custom_layout(node):
         """
         This function creates the stacking of clonal sequences
         """
-        if 'Weight' in node.features:
-            if node.Weight != -1:
-                for i in range(node.Weight):
-                    faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[node.SeqType]), 
-                                    node, column=i*2+1, position="branch-right")
-                spot_sum = node.Weight
-                # Go through the DF of different SeqTypes
-                if leaf_df.loc[node.name].sum() > 0:
-                    for seq_type_i in df_cols:
-                        range_val = leaf_df.loc[node.name, seq_type_i]
-                        for i in range(range_val):
-                            faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[seq_type_i]), 
-                                                node, column=spot_sum*2+1, position="branch-right")
-                            spot_sum += 1
+        if 'Classification' in node.features:
+            if node.Classification != classification_alternate:
+                if node.Weight != -1:
+                    for i in range(node.Weight):
+                        faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[node.SeqType]), 
+                                        node, column=i*2+1, position="branch-right")
+                    spot_sum = node.Weight
+                    # Go through the DF of different SeqTypes
+                    if leaf_df.loc[node.name].sum() > 0:
+                        for seq_type_i in df_cols:
+                            range_val = leaf_df.loc[node.name, seq_type_i]
+                            for i in range(range_val):
+                                faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[seq_type_i]), 
+                                                    node, column=spot_sum*2+1, position="branch-right")
+                                spot_sum += 1
+            # for classification_alternate
+            else:
+                if node.Weight != -1:
+                    for i in range(node.Weight):
+                        faces.add_face_to_node(faces.RectFace(8, 8, 'white', seqtype_cmap[node.SeqType]), 
+                                    node, column=i*2, position="branch-right")
+                    spot_sum = node.Weight
+                    # Go through the DF of different SeqTypes
+                    if leaf_df.loc[node.name].sum() > 0:
+                        for seq_type_i in df_cols:
+                            range_val = leaf_df.loc[node.name, seq_type_i]
+                            for i in range(range_val):
+                                faces.add_face_to_node(faces.RectFace(8, 8, 'white',seqtype_cmap[seq_type_i]), 
+                                                node, column=spot_sum*2+1.02, position="branch-right")
+                                spot_sum += 1
+    
     ts.layout_fn = custom_layout
 
     ts.margin_left = 20
@@ -157,9 +199,15 @@ def render_tree(treefile, df_csv):
 
     # LEGEND INFORMATION
     for key, val in seqtype_cmap.items():
-        ts.legend.add_face(TextFace(f" {key}", fsize=10), column=1)
+        ts.legend.add_face(TextFace(f" {key} ", fsize=10), column=1)
         ts.legend.add_face(CircleFace(3, val), column=0)
     ts.legend_position = 2
+
+    if class_csv is not None:
+        ts.legend.add_face(TextFace(f" {classification_alternate}", fsize=10), column=3)
+        ts.legend.add_face(RectFace(8,8,"black", "white"), column=2)
+        ts.legend.add_face(TextFace(f" {classification_default}", fsize=10), column=3)
+        ts.legend.add_face(CircleFace(3,"black"), column=2)
 
     # more space between branches
     ts.branch_vertical_margin = 2
@@ -173,9 +221,14 @@ def render_tree(treefile, df_csv):
 
 if __name__ == "__main__":
     # Get the file path from the command-line arguments
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 3:
         treefile = sys.argv[1]
         df_csv = sys.argv[2]
-        render_tree(treefile, df_csv)
+        class_csv = sys.argv[3]
+        render_tree(treefile, df_csv, class_csv)
+    elif len(sys.argv) > 2:
+        treefile = sys.argv[1]
+        df_csv = sys.argv[2]
+        render_tree(treefile, df_csv, None)
     else:
         print("Error: No file provided.")
