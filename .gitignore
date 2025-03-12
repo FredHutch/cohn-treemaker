@@ -178,6 +178,7 @@ venv/
 ENV/
 .env
 ete-treemaker-env/
+streamlit-app/
 
 # ignoring Tree files
 *.tre
