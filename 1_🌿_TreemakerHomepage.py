@@ -36,14 +36,21 @@ st.markdown("""
     """)
 
 # Upon start, search for uploaded_tree.tre in current dir, or tree-file.png/pdf in data/ and clear
-pdf_files = glob.glob(os.path.join('./data/', '**', '*.pdf'), recursive=True)
-for file in pdf_files:
-    os.remove(file)
-png_files = glob.glob(os.path.join('./data/', '**', '*.png'), recursive=True)
-for file in png_files:
-    os.remove(file)
-if os.path.isfile('uploaded_tree.tre'):
-    os.remove('uploaded_tree.tre')
+def clear_files():
+    """
+    When this function is called, uploaded_tree.tre temp file is cleared from directory and
+    any existing png/pdf files in the data directory are also cleared
+    """
+    pdf_files = glob.glob(os.path.join('./data/', '**', '*.pdf'), recursive=True)
+    for file in pdf_files:
+        os.remove(file)
+    png_files = glob.glob(os.path.join('./data/', '**', '*.png'), recursive=True)
+    for file in png_files:
+        os.remove(file)
+    if os.path.isfile('uploaded_tree.tre'):
+        os.remove('uploaded_tree.tre')
+
+clear_files()
 
 st.header("Sequence Parser")
 tab1, tab2 = st.tabs(["Online Input", "CSV Upload"])
