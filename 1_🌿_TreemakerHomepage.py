@@ -15,6 +15,7 @@ import streamlit as st
 import subprocess
 import sys
 import os
+import glob
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -34,7 +35,15 @@ st.markdown("""
     The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 
     """)
 
-# To Do: upon start, search for uploaded_tree.tre in current dir, or tree-file.* in data/ and clear
+# Upon start, search for uploaded_tree.tre in current dir, or tree-file.png/pdf in data/ and clear
+pdf_files = glob.glob(os.path.join('./data/', '**', '*.pdf'), recursive=True)
+for file in pdf_files:
+    os.remove(file)
+png_files = glob.glob(os.path.join('./data/', '**', '*.png'), recursive=True)
+for file in png_files:
+    os.remove(file)
+if os.path.isfile('uploaded_tree.tre'):
+    os.remove('uploaded_tree.tre')
 
 st.header("Sequence Parser")
 tab1, tab2 = st.tabs(["Online Input", "CSV Upload"])

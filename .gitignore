@@ -183,3 +183,6 @@ ete-treemaker-env/
 *.tre
 data/*.png
 data/*.pdf 
+
+# ignoring test_data
+test_data/

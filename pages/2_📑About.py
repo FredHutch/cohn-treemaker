@@ -20,7 +20,7 @@ st.markdown("""
             
     For Example:
     
-    | Sequence Type    | Parser String | Color |
+    | Sequence Characteristic    | Parser String | Color |
     | -------- | ------- | ------- |
     | Rebound  | RBD   |  #FFA600 |  
     | Autologous IgG Outgrowth  | AUB   |  #63BFCF |      
@@ -35,9 +35,10 @@ st.markdown("""
             
     Once the parser table is updated correctly, please upload your newick file containing these sequences.
     Accepted newick file formats are .tre, .nwk, .newick, and .tree.  
-    The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 
+    The resulting tree will be shown below. The resulting tree visualization can be downloaded as a PDF. 
     """)
 
 st.markdown("## Template Parser CSV")
 st.markdown("Below is a template csv to save custom parser settings for upload")
 st.download_button(label = "Download Template Parser CSV", data = "data/parser-template.csv", file_name = "parser-template.csv", mime="application/csv")
+st.markdown("Users can also download the parser template from the `Online Input` option in the mainpage.")
