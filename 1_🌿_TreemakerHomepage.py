@@ -23,7 +23,7 @@ from datetime import datetime
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-# from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
+from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 # from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
 st.title("Cohn Treemaker Web Tool")
