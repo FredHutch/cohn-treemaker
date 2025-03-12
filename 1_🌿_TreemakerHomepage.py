@@ -139,6 +139,49 @@ if on:
         hide_index=True, num_rows="fixed"
     )
 
+# expander containing customisable settings
+st.subheader("Tree Settings")
+with st.expander("Tree Visualization Options"):
+    # setting scale
+    ts_scale_parameter = 10000 # default value
+    scale_range = np.arange(1000, 11000, 1000).tolist()
+    ts_scale = st.select_slider(
+        "Set the branch length scale",
+        options=scale_range,
+        value=10000 # default value
+        )
+    if ts_scale != 10000:
+        ts_scale_parameter = ts_scale
+
+    # setting clone stacking threshold
+    threshold = 1e-06 # set threshold to be ~1 mutation (double check)
+    clone_range = [1e-08, 1e-07, 1e-06, 1e-05, 1e-04, 1e-03, 1e-02, 1e-01]
+    threshold_slider = st.select_slider(
+        "Set the clonality distance threshold \
+            (higher values have higher threshold for clones)",
+        options=clone_range,
+        value=1e-06 # default value
+        )
+    if threshold_slider != 1e-06:
+        threshold = threshold_slider
+
+    # if turned on, then leaf names will show
+    leaf_name_bool = False
+    leaf_name_on = st.toggle("Show Node Name")
+    if leaf_name_on:
+        leaf_name_bool = True
+        st.caption("Only the sequence name of the leading node is shown \
+                   (collapsed clones are not named)")
+
+# dictionary of tree visualization settings (keyword arguments)
+kwargs = {
+    "ts_scale": ts_scale_parameter,
+    "clone_threshold": threshold,
+    "leaf_name_bool": leaf_name_bool
+}
+kwargs = pd.DataFrame([kwargs]) # convert to df
+kwargs = kwargs.to_csv(index=False)
+
 st.header("Tree Upload")
 # upload file
 uploaded_file = st.file_uploader("Please upload your newick file", 
@@ -158,10 +201,10 @@ if uploaded_file:
     if on:
         class_csv = edited_shape.to_csv(index=False)
         # run tree-render-function.py and pass the temp tree file as an argument
-        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, class_csv], check=True)
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, class_csv, kwargs], check=True)
     else:
         # run tree-render-function.py and pass the temp tree file as an argument
-        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv], check=True)
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, kwargs], check=True)
 
     # display tree
     if os.path.exists("data/tree-file.png"):

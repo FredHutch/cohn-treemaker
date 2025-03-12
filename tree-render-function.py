@@ -17,11 +17,17 @@ import re
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
-def render_tree(treefile, df_csv, class_csv=None):
+def render_tree(treefile, df_csv, kwargs, class_csv=None):
     # Reading in newick tree file 
     t = Tree(treefile) # Tree not PhyloTree!
     # Deserialize the parser df DataFrame
     parser_df = pd.read_csv(StringIO(df_csv))
+
+    # Deserialize kwargs and set values
+    kwargs = pd.read_csv(StringIO(kwargs))
+    ts_scale = kwargs["ts_scale"].iloc[0]
+    clone_threshold = kwargs["clone_threshold"].iloc[0]
+    leaf_name_bool = kwargs["leaf_name_bool"].iloc[0]
 
     if class_csv is not None:
         class_df = pd.read_csv(StringIO(class_csv))
@@ -71,7 +77,7 @@ def render_tree(treefile, df_csv, class_csv=None):
 
     # Add Definition for Weight:
     # Weigth if the # of clones, and which nodes should be removed in place
-    threshold = 1e-06 # set threshold to be ~1 mutation (double check)
+    threshold = clone_threshold # default value = 1e-06 # set threshold to be ~1 mutation (double check)
 
     def leaf_distance(leaf1, leaf2):
         """
@@ -211,8 +217,8 @@ def render_tree(treefile, df_csv, class_csv=None):
 
     # more space between branches
     ts.branch_vertical_margin = 2
-    ts.scale = 10000 # def = 10000
-    ts.show_leaf_name = False
+    ts.scale = ts_scale # def = 10000
+    ts.show_leaf_name = leaf_name_bool # def = False
 
     # saving the plots as both a png for visualizing and a pdf for downloading
     t.render("data/tree-file.pdf", tree_style=ts, w=4, dpi=200, units='in')
@@ -221,14 +227,16 @@ def render_tree(treefile, df_csv, class_csv=None):
 
 if __name__ == "__main__":
     # Get the file path from the subprocess command-line arguments
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 4:
         treefile = sys.argv[1]
         df_csv = sys.argv[2]
         class_csv = sys.argv[3]
-        render_tree(treefile, df_csv, class_csv)
-    elif len(sys.argv) > 2:
+        kwargs = sys.argv[4]
+        render_tree(treefile, df_csv, kwargs, class_csv)
+    elif len(sys.argv) > 3:
         treefile = sys.argv[1]
         df_csv = sys.argv[2]
-        render_tree(treefile, df_csv, None)
+        kwargs = sys.argv[3]
+        render_tree(treefile, df_csv, kwargs, None)
     else:
         print("Error: No file provided.")
