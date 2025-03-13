@@ -26,13 +26,23 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 # from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
-st.title("Cohn Treemaker Web Tool")
+st.set_page_config(page_title="Homepage", page_icon="🐨", initial_sidebar_state='collapsed')
 
-st.markdown("This tool creates phylogenetic trees from sequencing data. It searches for clonal sequences and collapses them into stacked nodes for visualizations automatically.")
-st.markdown("""
+st.title("Koalafy (Cohn Lab Web-Tool)")
+st.image("data/Three_koalas.jpg", caption="Image source: https://commons.wikimedia.org/wiki/File:Three_koalas.jpg")
+st.markdown("### 'Koala-fy' your trees by stacking clonal nodes!")
+st.markdown("This tool creates phylogenetic tree visualizations from sequencing data. \
+            It searches for clonal sequences and collapses them into stacked nodes for visualizations automatically. \
+            (Like a bunch of stacked koalas at the end of a eucalyptus branch!)")
+st.markdown(""" ## How to Use:
+            
     To begin, please update the parser dataframe to fit the type of sequences you will be working with.
     For repeated use of a saved parser, you can also upload a CSV containing the information too using the
     CSV Upload tab.
+            
+    A 'parser' is what can be used to determine sequence characteristics from your tree's nodes. They should
+    be identifiable characters within the sequence's name in the newick file you upload. For examples, please
+    check the `About` page. 
             
     Once the parser table is updated correctly, please upload your newick file containing these sequences. 
     The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 

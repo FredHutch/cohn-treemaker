@@ -9,7 +9,7 @@ import streamlit as st
 import subprocess
 import sys
 import os
-
+st.set_page_config(page_title="About", page_icon="📑", initial_sidebar_state='collapsed')
 st.title("About Page")
 
 st.markdown("## How to Use")
