@@ -12,6 +12,8 @@ import pandas as pd
 import numpy as np
 import sys
 from io import StringIO
+import os
+os.environ['QT_QPA_PLATFORM']='offscreen'
 import re
 
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace

@@ -185,7 +185,7 @@ kwargs = {
 kwargs = pd.DataFrame([kwargs]) # convert to df
 kwargs = kwargs.to_csv(index=False)
 
-st.header("Tree Upload")
+st.header("Tree File Upload")
 # upload file
 uploaded_file = st.file_uploader("Please upload your newick file", 
                                  type=["tre", "nwk", "tree", "newick", "nhx"],
@@ -204,10 +204,10 @@ if uploaded_file:
     if on:
         class_csv = edited_shape.to_csv(index=False)
         # run tree-render-function.py and pass the temp tree file as an argument
-        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, class_csv, kwargs], check=True)
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, class_csv, kwargs])
     else:
         # run tree-render-function.py and pass the temp tree file as an argument
-        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, kwargs], check=True)
+        subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, kwargs])
 
     # display tree
     if os.path.exists("data/tree-file.png"):
