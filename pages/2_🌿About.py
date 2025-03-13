@@ -1,5 +1,5 @@
 """
-2_📑_About.py
+2_🌿_About.py
     Secondary About page containing description
     of the web app and other information.
     For more information see:
@@ -10,7 +10,7 @@ import subprocess
 import sys
 import os
 st.set_page_config(page_title="About", page_icon="🌿", initial_sidebar_state='collapsed')
-st.title("About Page")
+st.title("About Koalafy")
 
 st.markdown("## How to Use")
 st.markdown("""
@@ -35,7 +35,7 @@ st.markdown("""
             
     Once the parser table is updated correctly, please upload your newick file containing these sequences.
     Accepted newick file formats are .tre, .nwk, .newick, and .tree.  
-    The resulting tree will be shown below. The resulting tree visualization can be downloaded as a PDF. 
+    The resulting tree will be shown and can be downloaded as a PDF. 
     """)
 
 st.markdown("## Template Parser CSV")

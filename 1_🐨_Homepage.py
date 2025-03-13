@@ -1,5 +1,5 @@
 """
-TreemakerHomepage.py
+Homepage.py
     This is the main landing page of the Treemaker Web App.
     It accepts the tree file from the user and the parser
     dataframe.
