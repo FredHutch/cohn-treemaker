@@ -1,6 +1,8 @@
 # cohn-treemaker
 WebApp to create Phylogenetic Trees from sequencing data newick files and stack clonal sequences.
 
+This tool is made by the Cohn Lab at Fred Hutch. If you would like to use it, please reach out to use (wazam@fredhutch.org)
+
 ### How to Launch (Locally):
 
 Please ensure you have streamlit installed and other necessary libraries (pandas, PyQT5, ETE3). Please check environment.yml & requirements.txt to check for all necessary libraries and versions!

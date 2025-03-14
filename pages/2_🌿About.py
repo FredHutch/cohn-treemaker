@@ -69,3 +69,7 @@ st.markdown("## Template Parser CSV")
 st.markdown("Below is a template csv to save custom parser settings for upload")
 st.download_button(label = "Download Template Parser CSV", data = "data/parser-template.csv", file_name = "parser-template.csv", mime="application/csv")
 st.markdown("Users can also download the parser template from the `Online Input` option in the mainpage.")
+
+
+st.subheader("Get Help")
+st.markdown("""If you run into any problems, please reach out to me (wazam@fredhutch.org) for support!""")
