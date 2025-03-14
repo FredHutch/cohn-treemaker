@@ -70,10 +70,8 @@ tab1, tab2 = st.tabs(["Online Input", "CSV Upload"])
 # defining parser
 df = pd.DataFrame(
     [
-        {"SeqType": "Rebound", "Parser": "22", "Color": "#FFA600"},
-        {"SeqType": "Control IgG Outgrowth", "Parser": "UDB", "Color": "#63BFCF"},
-        {"SeqType": "Autologous IgG Outgrowth", "Parser": "AUB", "Color": "#DC3F93"},
-        {"SeqType": "No IgG Outgrowth", "Parser": "STB", "Color": "#2B488C"}
+        {"SeqType": "Type 1", "Parser": "", "Color": "#FFA600"},
+        {"SeqType": "Type 2", "Parser": "", "Color": "#63BFCF"},
     ]
 )
 with tab1:
@@ -81,7 +79,7 @@ with tab1:
         df,
         column_config={
             "SeqType": st.column_config.TextColumn(
-                "Sequence Characteristic",
+                "Sequence Characteristic Label",
                 help="Type of Sequence", required=True
             ),
             "Parser": st.column_config.TextColumn(
@@ -128,7 +126,7 @@ st.markdown("""
 if on:
     shape_df = pd.DataFrame(
         [
-            {"Classification": "Type 1", "Parser": "(Edit)", "Shape": "Square"},
+            {"Classification": "Type 1", "Parser": "", "Shape": "Square"},
             {"Classification": "Type 2", "Parser": "Default (Do Not Edit)", "Shape": "Circle"}
         ]
     )
@@ -136,7 +134,7 @@ if on:
         shape_df,
         column_config={
             "Classification": st.column_config.TextColumn(
-                "Sequence Characteristic",
+                "Sequence Characteristic Label",
                 help="Sequence characteristic classifications", required=True
             ),
             "Parser": st.column_config.TextColumn(
