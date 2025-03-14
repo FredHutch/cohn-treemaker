@@ -38,6 +38,33 @@ st.markdown("""
     The resulting tree will be shown and can be downloaded as a PDF. 
     """)
 
+st.markdown("""
+### Visualization Options
+
+**Node Colors**
+
+Colors for sequence types/characteristics are determined from the associated hexadecimal color code provided in the Sequence Parser table.
+
+**Node Shape**
+
+Currently there are two primary node shapes supported (circles and squares). Circle node shapes are default, 
+            however squares can be mapped to a specific sequence characteristic from the Shape Classification parser table. 
+
+Similar to the main parser table, a parser string can be associated with Squares, while rest will be assigned Circle (default).
+             For legend labelling, they can also be assigned labels within the table.
+
+**Tree Settings**
+
+In addition to color and shape, you can also manually change tree scale and clone stacking thresholds.
+
+For *scale* the slider can adjust the branch lengths. The tree will update the scale bar to reflect the new scale.
+
+For *clonality* the slider can be used determine the distance threshold used to group together 'clones'. 
+            A larger threshold means more nodes will be collapsed together.
+
+Additionally the leading node name for each branch can be visualized. This is useful to double check what sequences are being collapsed. 
+""")
+
 st.markdown("## Template Parser CSV")
 st.markdown("Below is a template csv to save custom parser settings for upload")
 st.download_button(label = "Download Template Parser CSV", data = "data/parser-template.csv", file_name = "parser-template.csv", mime="application/csv")
