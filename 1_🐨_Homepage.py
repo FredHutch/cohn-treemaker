@@ -74,6 +74,7 @@ df = pd.DataFrame(
         {"SeqType": "Type 2", "Parser": "", "Color": "#63BFCF"},
     ]
 )
+default_parser = df.copy()
 with tab1:
     edited_df = st.data_editor(
         df,
@@ -93,7 +94,7 @@ with tab1:
         },
         hide_index=True, num_rows="dynamic"
     )
-    st.caption("Parser Table")
+    st.caption("Parser Table - Add or Delete Entries by Selecting Rows")
 
     if edited_df.isnull().any().any():
         st.error("Parser table should not contain any missing values!")
@@ -110,11 +111,20 @@ with tab2:
     st.caption("Parser Upload")
     # read in uploaded parser
     if parser_upload:
-        edited_df = pd.read_csv(parser_upload)
+        df = pd.read_csv(parser_upload)
+        df = df.astype(str)
         if edited_df.isnull().any().any():
             st.error("Missing values detected. Parser table should not contain any missing values. Please re-upload corrected file.")
         else:
             st.success("Parser file successfully loaded!")
+            # show uploaded df
+            edited_df = st.data_editor(
+                df,
+                hide_index=True, num_rows="dynamic"
+            )
+            st.caption("Parser Table - Add or Delete Entries by Selecting Rows")
+        if edited_df.isnull().any().any():  # check again for any human edits
+                    st.error("Missing values detected. Parser table should not contain any missing values.")
 
 # Add Shape Data - classification
 st.subheader("Shape Classification")
@@ -200,6 +210,9 @@ uploaded_file = st.file_uploader("Please upload your newick file",
                                  accept_multiple_files = False)
 
 if uploaded_file:
+    # Check that parser table is updated
+    if edited_df.equals(default_parser):
+        st.warning('Warning: seems like you have not updated the parser table. Results may be unexpected!', icon="⚠️")
     # creates a file in writing mode
     temp_filename = "uploaded_tree.tre"
     with open(temp_filename,'w+b') as f:

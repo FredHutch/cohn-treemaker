@@ -61,7 +61,7 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
         found_match = False # check for is a parser was matched
         for index, row in parser_df.iterrows():
             # check for parser in leaf name
-            if re.search(row["Parser"], leaf_name):
+            if re.search(str(row["Parser"]), leaf_name):
                 leaf.add_feature("SeqType", row["SeqType"]) # add as a feature of the leaf
                 found_match = True # flip to true
                 break  # if a match found, exit loop and move to next leaf
@@ -74,6 +74,15 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
 
     # Dataframe to track different SeqTypes that are clones
     df_cols = parser_df['SeqType'].to_list()
+
+    unmapped = False # toggle for unmapped seqs
+    for leaf in t.iter_leaves():
+        if leaf.SeqType is False:
+            unmapped = True # flip on if False found
+    # if unmapped seqs exist, then add that to df_cols
+    if unmapped:
+        df_cols.append(False)
+
     leaf_df = pd.DataFrame(index = [leaf.name for leaf in t.iter_leaves()], columns = df_cols)
     leaf_df = leaf_df.fillna(0)
 
@@ -125,6 +134,9 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
 
     # Colormap for seq type
     seqtype_cmap = dict(zip(parser_df['SeqType'], parser_df['Color']))
+    # add default black for False seqtype (unmapped)
+    if unmapped:
+        seqtype_cmap[False] = 'black'
 
     # Setting node style
     def set_seqtype_color(node):
@@ -207,8 +219,12 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
 
     # LEGEND INFORMATION
     for key, val in seqtype_cmap.items():
-        ts.legend.add_face(TextFace(f" {key} ", fsize=10), column=1)
-        ts.legend.add_face(CircleFace(3, val), column=0)
+        if key:  # for unmapped sequences, don't populate legend
+            ts.legend.add_face(TextFace(f" {key} ", fsize=10), column=1)
+            ts.legend.add_face(CircleFace(3, val), column=0)
+        else:
+            ts.legend.add_face(TextFace(f" Undefined Sequence ", fsize=10), column=1)
+            ts.legend.add_face(CircleFace(3, val), column=0)
     ts.legend_position = 2
 
     if class_csv is not None:
