@@ -220,17 +220,17 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     # LEGEND INFORMATION
     for key, val in seqtype_cmap.items():
         if key:  # for unmapped sequences, don't populate legend
-            ts.legend.add_face(TextFace(f" {key} ", fsize=10), column=1)
+            ts.legend.add_face(TextFace(f" {key} ", fsize=12, ftype='Arial'), column=1)
             ts.legend.add_face(CircleFace(3, val), column=0)
         else:
-            ts.legend.add_face(TextFace(f" Undefined Sequence ", fsize=10), column=1)
+            ts.legend.add_face(TextFace(f" Undefined Sequence ", fsize=12, ftype='Arial'), column=1)
             ts.legend.add_face(CircleFace(3, val), column=0)
     ts.legend_position = 2
 
     if class_csv is not None:
-        ts.legend.add_face(TextFace(f" {classification_alternate}", fsize=10), column=3)
+        ts.legend.add_face(TextFace(f" {classification_alternate}", fsize=12, ftype='Arial'), column=3)
         ts.legend.add_face(RectFace(8,8,"black", "white"), column=2)
-        ts.legend.add_face(TextFace(f" {classification_default}", fsize=10), column=3)
+        ts.legend.add_face(TextFace(f" {classification_default}", fsize=12, ftype='Arial'), column=3)
         ts.legend.add_face(CircleFace(3,"black"), column=2)
 
     # more space between branches
