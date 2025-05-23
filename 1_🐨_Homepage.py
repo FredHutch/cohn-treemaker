@@ -193,12 +193,21 @@ with st.expander("Tree Visualization Options"):
         leaf_name_bool = True
         st.caption("Only the sequence name of the leading node is shown \
                    (collapsed clones are not named)")
+        
+    # set the rooting of the tree if you dont want midpoint rooting
+    tree_root = st.text_input("Set Tree Outgroup Node Name", "Midpoint Rooting")
+    if tree_root == 'Midpoint Rooting' or tree_root == '':
+        tree_root = "midpoint"
+    else:
+        tree_root = str(tree_root)
+    st.caption("Default behavior set to midpoint rooting if node name is not valid")
 
 # dictionary of tree visualization settings (keyword arguments)
 kwargs = {
     "ts_scale": ts_scale_parameter,
     "clone_threshold": threshold,
-    "leaf_name_bool": leaf_name_bool
+    "leaf_name_bool": leaf_name_bool,
+    "rooting_node": tree_root
 }
 kwargs = pd.DataFrame([kwargs]) # convert to df
 kwargs = kwargs.to_csv(index=False)
@@ -239,5 +248,5 @@ if uploaded_file:
             download_filename = f"tree-{today_date}.pdf"
             st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")
     else: 
-        st.error("Error in creatng tree. tree-file.png not found.")
+        st.error("Error in creating tree. tree-file.png not found.")
 

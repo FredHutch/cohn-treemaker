@@ -30,6 +30,7 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     ts_scale = kwargs["ts_scale"].iloc[0]
     clone_threshold = kwargs["clone_threshold"].iloc[0]
     leaf_name_bool = kwargs["leaf_name_bool"].iloc[0]
+    rooting_node = kwargs["rooting_node"].iloc[0]
 
     if class_csv is not None:
         class_df = pd.read_csv(StringIO(class_csv))
@@ -41,9 +42,13 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
         classification_alternate = "alternate"
 
     # Midpoint rooting tree
-    midpoint = t.get_midpoint_outgroup()
+    if rooting_node == 'midpoint':
+        midpoint = t.get_midpoint_outgroup()
+    elif t.search_nodes(name=rooting_node):  # if the node is not valid, then reverts to midpoint
+        midpoint = rooting_node
+    else:
+        midpoint = t.get_midpoint_outgroup()
     t.set_outgroup(midpoint)
-
     # Ladderize tree
     t.ladderize()
 
