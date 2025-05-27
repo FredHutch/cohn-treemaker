@@ -103,9 +103,13 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
 
     # Iterate through each leaf
     checked_neighbors = set() # set of every node that has been 'accounted' for
+    # create a dictionary of dictionaries to track shapes per node:
+    node_shape_list = {}
 
     # for every leaf...
     for leaf in t.iter_leaves():
+        # create a dict for the node:
+        shapes_dict = {}
         if leaf in checked_neighbors:
             # make sure it wasn't already counted for...
             leaf.add_feature("Weight", -1)
@@ -124,16 +128,27 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
                     elif distance <= threshold and leaf.SeqType != other_leaf.SeqType:
                         leaf_df.loc[leaf.name, other_leaf.SeqType] = leaf_df.loc[leaf.name, other_leaf.SeqType] + 1
                         checked_neighbors.add(other_leaf)
+                        if other_leaf.Classification != leaf.Classification:
+                            if other_leaf.SeqType in shapes_dict.keys():
+                                shapes_dict[other_leaf.SeqType] = shapes_dict[other_leaf.SeqType] + 1 
+                            else:
+                                shapes_dict[other_leaf.SeqType] = 1
             # Assign the weight as a feature to the leaf
             leaf.add_feature("Weight", weight)
             # mark the current leaf as also counted for 
             checked_neighbors.add(leaf)
+            # add shapes_dict to list
+            node_shape_list[leaf.name] = shapes_dict
 
     leaves_to_keep = [] # empty list of leaves to keep
     # keep leaves that have a weight 
     for leaf in t.iter_leaves():
         if leaf.Weight != -1:
             leaves_to_keep.append(leaf)
+    # remove nodes that are clonal from shape list
+    for x in leaves_to_keep:
+        if x in node_shape_list:
+            node_shape_list.pop(x.name)
     # drop leaves with weight = -1 while preserving branch lengths
     t.prune(leaves_to_keep, preserve_branch_length=True)
 
@@ -186,10 +201,22 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
                     # Go through the DF of different SeqTypes
                     if leaf_df.loc[node.name].sum() > 0:
                         for seq_type_i in df_cols:
+                            # if alternate shape present in node_shape_list track how many of that seq type
+                            shape_dict = node_shape_list[node.name]
+                            if seq_type_i in shape_dict.keys():
+                                alt_value = shape_dict[seq_type_i]
+                            else:
+                                alt_value = 0 
+                                
                             range_val = leaf_df.loc[node.name, seq_type_i]
-                            for i in range(range_val):
+                            new_range_val = range_val - alt_value
+                            for i in range(new_range_val):
                                 faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[seq_type_i]), 
                                                     node, column=spot_sum*2+1, position="branch-right")
+                                spot_sum += 1
+                            for i in range(alt_value):
+                                faces.add_face_to_node(faces.RectFace(8, 8, 'white',seqtype_cmap[seq_type_i]), 
+                                                node, column=spot_sum*2+1.02, position="branch-right")
                                 spot_sum += 1
             # for classification_alternate
             else:
@@ -201,10 +228,22 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
                     # Go through the DF of different SeqTypes
                     if leaf_df.loc[node.name].sum() > 0:
                         for seq_type_i in df_cols:
+                            # if default shape present in node_shape_list track how many of that seq type
+                            shape_dict = node_shape_list[node.name]
+                            if seq_type_i in shape_dict.keys():
+                                alt_value = shape_dict[seq_type_i]
+                            else:
+                                alt_value = 0
+                                
                             range_val = leaf_df.loc[node.name, seq_type_i]
-                            for i in range(range_val):
+                            new_range_val = range_val - alt_value
+                            for i in range(new_range_val):
                                 faces.add_face_to_node(faces.RectFace(8, 8, 'white',seqtype_cmap[seq_type_i]), 
                                                 node, column=spot_sum*2+1.02, position="branch-right")
+                                spot_sum += 1
+                            for i in range(alt_value):
+                                faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[seq_type_i]), 
+                                                    node, column=spot_sum*2+1, position="branch-right")
                                 spot_sum += 1
     
     ts.layout_fn = custom_layout
