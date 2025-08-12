@@ -37,7 +37,7 @@ visualization.
 For repeated use of a saved parser, you can also upload a CSV containing the information too using the
 'CSV Upload' tab. Once you fill out the table, you can also save that as a CSV for future re-uploads.
 
-###Visualization Options
+### Visualization Options
 
 **Node Colors**
 

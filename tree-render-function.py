@@ -125,6 +125,12 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
                         # add to counter and mark as counted for 
                         weight += 1
                         checked_neighbors.add(other_leaf)
+                        # if same type but mix of classification (intact/defect) also add to shapes_dict
+                        if other_leaf.Classification != leaf.Classification:
+                            if other_leaf.SeqType in shapes_dict.keys():
+                                shapes_dict[other_leaf.SeqType] = shapes_dict[other_leaf.SeqType] + 1 
+                            else:
+                                shapes_dict[other_leaf.SeqType] = 1
                     elif distance <= threshold and leaf.SeqType != other_leaf.SeqType:
                         leaf_df.loc[leaf.name, other_leaf.SeqType] = leaf_df.loc[leaf.name, other_leaf.SeqType] + 1
                         checked_neighbors.add(other_leaf)
@@ -133,10 +139,12 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
                                 shapes_dict[other_leaf.SeqType] = shapes_dict[other_leaf.SeqType] + 1 
                             else:
                                 shapes_dict[other_leaf.SeqType] = 1
+
             # Assign the weight as a feature to the leaf
             leaf.add_feature("Weight", weight)
             # mark the current leaf as also counted for 
             checked_neighbors.add(leaf)
+
             # add shapes_dict to list
             node_shape_list[leaf.name] = shapes_dict
 
@@ -194,12 +202,19 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
         if 'Classification' in node.features:
             if node.Classification != classification_alternate:
                 if node.Weight != -1:
-                    for i in range(node.Weight):
+                    weight_range = node.Weight
+                    # if the leading node has mixed types then adjust number of circles and squares
+                    if node.SeqType in node_shape_list[node.name].keys():
+                        shape_dict = node_shape_list[node.name]
+                        alt_value = shape_dict[node.SeqType]
+                        weight_range = weight_range - alt_value
+                        print(weight_range)
+                    for i in range(weight_range):
                         faces.add_face_to_node(faces.CircleFace(4, seqtype_cmap[node.SeqType]), 
                                         node, column=i*2+1, position="branch-right")
-                    spot_sum = node.Weight
-                    # Go through the DF of different SeqTypes
-                    if leaf_df.loc[node.name].sum() > 0:
+                    spot_sum = weight_range
+                    # Go through the DF of different SeqTypes / or if node_shape_list isn't empty
+                    if leaf_df.loc[node.name].sum() > 0 or len(node_shape_list[node.name])>=1:
                         for seq_type_i in df_cols:
                             # if alternate shape present in node_shape_list track how many of that seq type
                             shape_dict = node_shape_list[node.name]
@@ -221,12 +236,19 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
             # for classification_alternate
             else:
                 if node.Weight != -1:
-                    for i in range(node.Weight):
+                    weight_range = node.Weight
+                    # if the leading node has mixed types then adjust number of circles and squares
+                    if node.SeqType in node_shape_list[node.name].keys():
+                        shape_dict = node_shape_list[node.name]
+                        alt_value = shape_dict[node.SeqType]
+                        weight_range = weight_range - alt_value
+                        print(weight_range)
+                    for i in range(weight_range):
                         faces.add_face_to_node(faces.RectFace(8, 8, 'white', seqtype_cmap[node.SeqType]), 
                                     node, column=i*2, position="branch-right")
-                    spot_sum = node.Weight
+                    spot_sum = weight_range
                     # Go through the DF of different SeqTypes
-                    if leaf_df.loc[node.name].sum() > 0:
+                    if leaf_df.loc[node.name].sum() > 0 or len(node_shape_list[node.name])>=1:
                         for seq_type_i in df_cols:
                             # if default shape present in node_shape_list track how many of that seq type
                             shape_dict = node_shape_list[node.name]
