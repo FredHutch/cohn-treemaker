@@ -184,6 +184,7 @@ streamlit-app/
 *.tre
 data/*.png
 data/*.pdf 
+data/*.svg
 
 # ignoring test_data
 test_data/
