@@ -52,13 +52,16 @@ st.markdown(""" ## How to Use:
 def clear_files():
     """
     When this function is called, uploaded_tree.tre temp file is cleared from directory and
-    any existing png/pdf files in the data directory are also cleared
+    any existing png/pdf/svg files in the data directory are also cleared
     """
     pdf_files = glob.glob(os.path.join('./data/', '**', '*.pdf'), recursive=True)
     for file in pdf_files:
         os.remove(file)
     png_files = glob.glob(os.path.join('./data/', '**', '*.png'), recursive=True)
     for file in png_files:
+        os.remove(file)
+    svg_files = glob.glob(os.path.join('./data/', '**', '*.svg'), recursive=True)
+    for file in svg_files:
         os.remove(file)
     if os.path.isfile('uploaded_tree.tre'):
         os.remove('uploaded_tree.tre')
@@ -70,8 +73,8 @@ tab1, tab2 = st.tabs(["Online Input", "CSV Upload"])
 # defining parser
 df = pd.DataFrame(
     [
-        {"SeqType": "Type 1", "Parser": "", "Color": "#FFA600"},
-        {"SeqType": "Type 2", "Parser": "", "Color": "#63BFCF"},
+        {"SeqType": "Type 1", "Parser": "", "Color": "#FFA600", "Shape": "Circle"},
+        {"SeqType": "Type 2", "Parser": "", "Color": "#63BFCF", "Shape": "Circle"},
     ]
 )
 default_parser = df.copy()
@@ -90,6 +93,10 @@ with tab1:
             "Color": st.column_config.TextColumn(
                 "Color",
                 help="Hexadecimal color code", required=True
+            ),
+            "Shape": st.column_config.TextColumn(
+                "Shape",
+                help="Supported node shapes: Circle, Triangle, Square, Pentagon (Default=Circle)", required=True
             )
         },
         hide_index=True, num_rows="dynamic"
@@ -240,13 +247,18 @@ if uploaded_file:
         subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, kwargs])
 
     # display tree
-    if os.path.exists("data/tree-file.png"):
+    if os.path.exists("data/tree-file.svg"):
         st.header("Tree Visualization")
-        st.image("data/tree-file.png")
+        # st.image("data/tree-file.png")
+        st.image("data/tree-file.svg", use_container_width=True)
         with open("data/tree-file.pdf", "rb") as file:
             today_date = datetime.now().strftime("%Y-%m-%d")
             download_filename = f"tree-{today_date}.pdf"
             st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")
+        with open("data/tree-file.svg", "rb") as file:
+            today_date = datetime.now().strftime("%Y-%m-%d")
+            download_filename = f"tree-{today_date}.svg"
+            st.download_button(label = "Download Tree File as a SVG", data = file, file_name = download_filename, mime="image/svg+xml")
     else: 
-        st.error("Error in creating tree. tree-file.png not found.")
+        st.error("Error in creating tree. tree-file image not found.")
 

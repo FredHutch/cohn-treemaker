@@ -15,6 +15,8 @@ from io import StringIO
 import os
 os.environ['QT_QPA_PLATFORM']='offscreen'
 import re
+import math
+from lxml import etree
 
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
@@ -24,6 +26,9 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     t = Tree(treefile) # Tree not PhyloTree!
     # Deserialize the parser df DataFrame
     parser_df = pd.read_csv(StringIO(df_csv))
+
+    # Dict for any shapes to update
+    shape_update_dict = dict(zip(parser_df['Color'], parser_df['Shape']))
 
     # Deserialize kwargs and set values
     kwargs = pd.read_csv(StringIO(kwargs))
@@ -317,6 +322,111 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     t.render("data/tree-file.pdf", tree_style=ts, w=4, dpi=200, units='in')
     t.render("data/tree-file.png", tree_style=ts, w=4, dpi=200, units='in')
     t.render("data/tree-file.svg", tree_style=ts, w=4, dpi=200, units='in') # save version as SVG for internal use
+
+    # update shapes according to shape_update_dict
+    # if all(value == 'Circle' for value in shape_update_dict.values()) == False:
+    tree = etree.parse("data/tree-file.svg")
+    root = tree.getroot()
+    ns = {"svg":"http://www.w3.org/2000/svg"} # XML namespace for SVG
+    for key, val in shape_update_dict.items():
+        target_color = key # target node color to replace
+        target_shape = val # what to shape to replace
+        if target_shape.lower() != 'circle':
+            for circle in root.xpath(".//*[local-name()='circle']"):
+                parent = circle.getparent()
+
+                # check parent fill instead of circle
+                fill = parent.get("fill", "").upper()
+
+                # get parent values for stroke width and stroke
+                stroke = parent.get("stroke", "none")
+                stroke_width = parent.get("stroke-width", "1")
+
+                if fill == target_color:
+                    new_shape = replace_shape(circle, target_shape, fill, stroke, stroke_width)
+                    parent.replace(circle, new_shape)
+    for text_elem in root.xpath(".//*[local-name()='text']"):
+        text_elem.set("font-family", "Arial")   
+    tree.write("data/tree-file.svg", pretty_print=True)
+
+
+def replace_shape(circle, shape, fill, stroke, stroke_width):
+    """
+    This function takes in values for circles to replace with a new
+    shape. It takes in circle values including a specific fill color
+    to replace with a new shape.
+    Shapes are defined as either 'triangle', 'diamond', or 'pentagon'.
+    It uses the parent stroke and stroke width to match new shape to existing
+    nodes.
+    """
+    # get circle values
+    cx = float(circle.get("cx"))
+    cy = float(circle.get("cy"))
+    r = float(circle.get("r"))
+
+    if shape.lower() == "triangle":
+        # create equilateral triangle pointing upwards
+        angles = [-90, 30, 150]
+        points = [
+            f"{cx + r * math.cos(math.radians(a))},{cy + r * math.sin(math.radians(a))}"
+            for a in angles
+        ]
+        elem = etree.Element("polygon", {
+            "points": " ".join(points),
+            "fill": fill,
+            "stroke": stroke,
+            "stroke-width": stroke_width
+        })
+
+    elif shape.lower() == "diamond":
+        # create a diamond shape
+        points = [
+            f"{cx},{cy - r}",  # top
+            f"{cx + r},{cy}",  # right
+            f"{cx},{cy + r}",  # bottom
+            f"{cx - r},{cy}"   # left
+        ]
+        elem = etree.Element("polygon", {
+            "points": " ".join(points),
+            "fill": fill,
+            "stroke": stroke,
+            "stroke-width": stroke_width
+        })
+
+    elif shape.lower() == "pentagon":
+        # create a pentagon shape
+        points = []
+        for i in range(5):
+            angle_deg = -90 + i * 72
+            x = cx + r * math.cos(math.radians(angle_deg))
+            y = cy + r * math.sin(math.radians(angle_deg))
+            points.append(f"{x},{y}")
+        elem = etree.Element("polygon", {
+            "points": " ".join(points),
+            "fill": fill,
+            "stroke": stroke,
+            "stroke-width": stroke_width
+        })
+    elif shape.lower() == "square":
+        # create a square centered at cx, cy
+        half = r * 0.75
+        points = [
+            f"{cx - half},{cy - half}",
+            f"{cx + half},{cy - half}",
+            f"{cx + half},{cy + half}",
+            f"{cx - half},{cy + half}"
+        ]
+        elem = etree.Element("polygon", {
+            "points": " ".join(points),
+            "fill": fill,
+            "stroke": stroke,
+            "stroke-width": stroke_width
+        })
+    else:
+        # raise error if unsupported shape is passed
+        raise ValueError(f"Unsupported shape: {shape}")
+    
+    return elem
 
 
 if __name__ == "__main__":

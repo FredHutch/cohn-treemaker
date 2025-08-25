@@ -29,6 +29,8 @@ RUN pip install pandas
 
 RUN pip install numpy
 
+RUN pip install lxml
+
 # RUN pip3 install -r requirements.txt
 
 ADD . /app/cohn-treemaker/
