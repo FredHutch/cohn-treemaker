@@ -284,6 +284,15 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     t.set_style(rootstyle)
 
     # LEGEND INFORMATION
+
+    # add padding around legend
+    ts.legend.add_face(TextFace(f"", fsize=20, ftype='Arial'), column=0)
+    ts.legend.add_face(TextFace(f"                    ", fsize=20, ftype='Arial'), column=1)
+    ts.legend.add_face(TextFace(f"", fsize=20, ftype='Arial'), column=2)
+    ts.legend.add_face(TextFace(f"                    ", fsize=20, ftype='Arial'), column=3)
+    ts.legend.add_face(TextFace(f"", fsize=20, ftype='Arial'), column=4)
+    ts.legend.add_face(TextFace(f"                    ", fsize=20, ftype='Arial'), column=5)
+
     for key, val in seqtype_cmap.items():
         if key:  # for unmapped sequences, don't populate legend
             ts.legend.add_face(TextFace(f" {key} ", fsize=12, ftype='Arial'), column=1)
@@ -307,6 +316,7 @@ def render_tree(treefile, df_csv, kwargs, class_csv=None):
     # saving the plots as both a png for visualizing and a pdf for downloading
     t.render("data/tree-file.pdf", tree_style=ts, w=4, dpi=200, units='in')
     t.render("data/tree-file.png", tree_style=ts, w=4, dpi=200, units='in')
+    t.render("data/tree-file.svg", tree_style=ts, w=4, dpi=200, units='in') # save version as SVG for internal use
 
 
 if __name__ == "__main__":
