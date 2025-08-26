@@ -20,10 +20,10 @@ st.markdown("""
             
     For Example:
     
-    | Sequence Characteristic    | Parser String | Color |
-    | -------- | ------- | ------- |
-    | Rebound  | RBD   |  #FFA600 |  
-    | Autologous IgG Outgrowth  | AUB   |  #63BFCF |      
+    | Sequence Characteristic    | Parser String | Color | Shape |
+    | -------- | ------- | ------- | ------- |
+    | Rebound  | RBD   |  #FFA600 |  Circle |
+    | Autologous IgG Outgrowth  | AUB   |  #63BFCF | Circle |
     """)
 st.markdown("""   
     Here the parser string "RBD" can identify sequences that belong to the Sequence Type "Rebound".
@@ -47,8 +47,9 @@ Colors for sequence types/characteristics are determined from the associated hex
 
 **Node Shape**
 
-Currently there are two primary node shapes supported (circles and squares). Circle node shapes are default, 
-            however squares can be mapped to a specific sequence characteristic from the Shape Classification parser table. 
+Currently there are 5 primary node shapes supported (circle, square, triangle, diamond, pentagon). Circle node shapes are default. 
+            Shapes to mapped to specific colors by hexadeximal matching. Identical colors currently cannot match to two distinct shapes
+            other than using a binary circle and square differentiatior through a parser table as described below:
 
 Similar to the main parser table, a parser string can be associated with Squares, while rest will be assigned Circle (default).
              For legend labelling, they can also be assigned labels within the table.
@@ -67,7 +68,8 @@ Additionally the leading node name for each branch can be visualized. This is us
 
 st.markdown("## Template Parser CSV")
 st.markdown("Below is a template csv to save custom parser settings for upload")
-st.download_button(label = "Download Template Parser CSV", data = "data/parser-template.csv", file_name = "parser-template.csv", mime="application/csv")
+with open("data/parser-template.csv", "rb") as file:
+    st.download_button(label = "Download Template Parser CSV", data = file, file_name = "parser-template.csv", mime="application/csv")
 st.markdown("Users can also download the parser template from the `Online Input` option in the mainpage.")
 
 
