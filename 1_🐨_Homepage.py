@@ -247,18 +247,17 @@ if uploaded_file:
         subprocess.run([f"{sys.executable}", "tree-render-function.py", temp_filename, df_csv, kwargs])
 
     # display tree
-    if os.path.exists("data/tree-file.svg"):
+    if os.path.exists("data/tree-file.png"):
         st.header("Tree Visualization")
         # st.image("data/tree-file.png")
-        st.image("data/tree-file.svg", use_container_width=True)
-        with open("data/tree-file.pdf", "rb") as file:
-            today_date = datetime.now().strftime("%Y-%m-%d")
-            download_filename = f"tree-{today_date}.pdf"
-            st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")
+        st.image("data/tree-file.svg", width=10000)
+        # with open("data/tree-file.pdf", "rb") as file:
+        #     today_date = datetime.now().strftime("%Y-%m-%d")
+        #     download_filename = f"tree-{today_date}.pdf"
+        #     st.download_button(label = "Download Tree File as a PDF", data = file, file_name = download_filename, mime="application/pdf")
         with open("data/tree-file.svg", "rb") as file:
             today_date = datetime.now().strftime("%Y-%m-%d")
             download_filename = f"tree-{today_date}.svg"
             st.download_button(label = "Download Tree File as a SVG", data = file, file_name = download_filename, mime="image/svg+xml")
     else: 
         st.error("Error in creating tree. tree-file image not found.")
-
