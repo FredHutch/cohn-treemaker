@@ -26,26 +26,37 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 # from ete3 import faces, AttrFace, CircleFace, TextFace, RectFace
 
-st.set_page_config(page_title="Homepage", page_icon="🐨", initial_sidebar_state='collapsed')
+st.set_page_config(page_title="Homepage", page_icon="🐨")
 
-st.title("Koalafy (Cohn Lab Web-Tool)")
+st.title("Koalafy - Tree Visualizer")
+st.subheader("Cohn Lab Web-Tool")
 st.image("data/Three_koalas.jpg", caption="Image source: https://commons.wikimedia.org/wiki/File:Three_koalas.jpg")
 st.markdown("### 'Koala-fy' your trees by stacking clonal nodes!")
-st.markdown("This tool creates phylogenetic tree visualizations from sequencing data. \
-            It searches for clonal sequences and collapses them into stacked nodes for visualizations automatically. \
-            (Like a bunch of stacked koalas at the end of a eucalyptus branch!)")
-st.markdown(""" ## How to Use:
+st.markdown("This tool creates phylogenetic tree visualizations from tree-files. \
+            It searches for clonal sequences and collapses them into stacked nodes automatically.")
+st.code("""
+    🌿 
+    ├── 🐨 
+    │   ├── 🐨🐨 
+    │   └── 🐨 
+    └── 🐨🐨🐨
+""")
+st.markdown("Just like a bunch of stacked koalas at the end of a eucalyptus branch!")
+st.markdown(""" ### Get Started:
             
-    To begin, please update the parser dataframe to fit the type of sequences you will be working with.
-    For repeated use of a saved parser, you can also upload a CSV containing the information too using the
-    CSV Upload tab.
+    To get started, all you need is (1) a tree file (Newick/Tre/NHX, output by tools such as FigTree) and 
+    (2) node annotations (can be input as a CSV or directly into the webpage). 
             
-    A 'parser' is what can be used to determine sequence characteristics from your tree's nodes. They should
-    be identifiable characters within the sequence's name in the newick file you upload. For examples, please
-    check the `About` page. 
+    You can directly upload your tree file into the *Tree File Upload* section to visualize your tree with
+    default settings.
+        
+    You can customize your tree using node annotations with the Sequence Parser table to change node colors,
+    shapes, and labels.
             
-    Once the parser table is updated correctly, please upload your newick file containing these sequences. 
-    The resulting tree will be shown below. If you would like, you can download the visualization as a PDF. 
+            
+    The visualization can then be downloaded as a SVG file! For more detailed instructions and examples, please reference the `About` page.
+            
+    **Note: Data is not stored on this tool. Refreshing the page removes any uploaded data/tree visualizations**
     """)
 
 # Upon start, search for uploaded_tree.tre in current dir, or tree-file.png/pdf in data/ and clear
@@ -134,12 +145,12 @@ with tab2:
                     st.error("Missing values detected. Parser table should not contain any missing values.")
 
 # Add Shape Data - classification
-st.subheader("Shape Classification")
+st.subheader("Binary Shape Classification")
 # circle - default, square - set to parse
 on = st.toggle("Multiple Shapes")
 st.markdown("""
-            You can specify what type of sequences to set as square shaped nodes. 
-            Rest of the sequences are set by default as circles.""")
+            Specify types of sequences to set as square or circle shaped nodes. Best used for binary type assignments. 
+            """)
 if on:
     shape_df = pd.DataFrame(
         [
@@ -258,6 +269,6 @@ if uploaded_file:
         with open("data/tree-file.svg", "rb") as file:
             today_date = datetime.now().strftime("%Y-%m-%d")
             download_filename = f"tree-{today_date}.svg"
-            st.download_button(label = "Download Tree File as a SVG", data = file, file_name = download_filename, mime="image/svg+xml")
+            st.download_button(label = "Download Tree as a SVG", data = file, file_name = download_filename, mime="image/svg+xml")
     else: 
         st.error("Error in creating tree. tree-file image not found.")

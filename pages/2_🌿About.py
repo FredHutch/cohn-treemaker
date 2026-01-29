@@ -9,7 +9,7 @@ import streamlit as st
 import subprocess
 import sys
 import os
-st.set_page_config(page_title="About", page_icon="🌿", initial_sidebar_state='collapsed')
+st.set_page_config(page_title="About", page_icon="🌿")
 st.title("About Koalafy")
 
 st.markdown("## How to Use")
@@ -72,6 +72,8 @@ with open("data/parser-template.csv", "rb") as file:
     st.download_button(label = "Download Template Parser CSV", data = file, file_name = "parser-template.csv", mime="application/csv")
 st.markdown("Users can also download the parser template from the `Online Input` option in the mainpage.")
 
+st.subheader("Citation")
+st.markdown("""Please cite this tool if you use its visualizations by linking the URL (https://koalafytrees.fredhutch.org) and the Cohn Lab at Fred Hutch (2025)""")
 
 st.subheader("Get Help")
 st.markdown("""If you run into any problems, please reach out to me (wazam@fredhutch.org) for support!""")
