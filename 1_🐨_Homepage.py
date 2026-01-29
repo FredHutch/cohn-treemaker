@@ -29,7 +29,7 @@ from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 st.set_page_config(page_title="Homepage", page_icon="🐨")
 
 st.title("Koalafy - Tree Visualizer")
-st.caption("Cohn Lab | Fred Hutchinson Cancer Center | 2025")
+st.caption("Cohn Lab | Fred Hutchinson Cancer Center")
 st.markdown("""**Koalafy** is a web-based phylogenetic tree visualization tool designed to help researchers
 analyze and visualize evolutionary relationships in sequencing data""")
 st.image("data/Three_koalas.jpg", caption="Image source: https://commons.wikimedia.org/wiki/File:Three_koalas.jpg")
@@ -285,3 +285,7 @@ if uploaded_file:
             st.download_button(label = "Download Tree as a SVG", data = file, file_name = download_filename, mime="image/svg+xml")
     else: 
         st.error("Error in creating tree. tree-file image not found.")
+
+# Footer
+st.markdown("---")
+st.caption("Koalafy - Tree Visualizer v1.0 | Cohn Lab @ Fred Hutchinson Cancer Center | Last Updated: January 2026")

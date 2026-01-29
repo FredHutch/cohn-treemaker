@@ -423,4 +423,4 @@ st.markdown("""
 
 # Footer
 st.markdown("---")
-st.caption("Koalafy - Tree Visualizer v1.0 | Cohn Lab @ Fred Hutchinson Cancer Center | Last Updated: January 2025")
+st.caption("Koalafy - Tree Visualizer v1.0 | Cohn Lab @ Fred Hutchinson Cancer Center | Last Updated: January 2026")
