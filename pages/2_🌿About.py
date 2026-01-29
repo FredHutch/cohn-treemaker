@@ -28,6 +28,8 @@ st.markdown("""
 \n #### This page contains more details and examples of how to use this tool
 """)
 
+st.image("data/KoalafyExample.jpg", caption="Example of Koalafying your Tree!")
+
 st.markdown("""
 **Key Features:**
 - 🐨 Automatic clone detection and visualization
