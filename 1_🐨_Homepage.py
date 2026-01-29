@@ -29,35 +29,48 @@ from ete3 import Tree, TreeStyle, PhyloTree, TextFace, NodeStyle, SeqMotifFace
 st.set_page_config(page_title="Homepage", page_icon="🐨")
 
 st.title("Koalafy - Tree Visualizer")
-st.subheader("Cohn Lab Web-Tool")
+st.caption("Cohn Lab | Fred Hutchinson Cancer Center | 2025")
+st.markdown("""**Koalafy** is a web-based phylogenetic tree visualization tool designed to help researchers
+analyze and visualize evolutionary relationships in sequencing data""")
 st.image("data/Three_koalas.jpg", caption="Image source: https://commons.wikimedia.org/wiki/File:Three_koalas.jpg")
-st.markdown("### 'Koala-fy' your trees by stacking clonal nodes!")
-st.markdown("This tool creates phylogenetic tree visualizations from tree-files. \
-            It searches for clonal sequences and collapses them into stacked nodes automatically.")
+st.markdown("""
+\n Built by the Cohn Lab
+at Fred Hutchinson Cancer Center, this tool automatically identifies clonal sequences
+(sequences that are nearly identical) and collapses them into "stacked nodes" for clearer visualization...
+""")
+
 st.code("""
-    🌿 
-    ├── 🐨 
-    │   ├── 🐨🐨 
-    │   └── 🐨 
+    🌿
+    ├── 🐨
+    │   ├── 🐨🐨
+    │   └── 🐨
     └── 🐨🐨🐨
 """)
-st.markdown("Just like a bunch of stacked koalas at the end of a eucalyptus branch!")
-st.markdown(""" ### Get Started:
-            
-    To get started, all you need is (1) a tree file (Newick/Tre/NHX, output by tools such as FigTree) and 
-    (2) node annotations (can be input as a CSV or directly into the webpage). 
-            
-    You can directly upload your tree file into the *Tree File Upload* section to visualize your tree with
-    default settings.
-        
-    You can customize your tree using node annotations with the Sequence Parser table to change node colors,
-    shapes, and labels.
-            
-            
-    The visualization can then be downloaded as a SVG file! For more detailed instructions and examples, please reference the `About` page.
-            
-    **Note: Data is not stored on this tool. Refreshing the page removes any uploaded data/tree visualizations**
+
+st.markdown("""
+**...Just like a bunch of stacked koalas hanging on a eucalyptus branch!**
+""")
+
+st.markdown("### Quick Start Guide")
+with st.expander("🌿 Click to see Koalafy's workflow"):
+    st.markdown("""
+    Getting started with Koalafy is simple! You need just two things:
+
+    1. **A tree file** - Newick format output from phylogenetic analysis tools (e.g., FigTree, IQ-TREE)
+    2. **Node annotations** (optional) - Information about your sequence types for custom colors and shapes
+
+    **Workflow:**
+    1. Navigate to the Homepage
+    2. Configure the Sequence Parser table with your sequence characteristics (optional)
+    3. Upload your tree file in the "Tree File Upload" section
+    4. View your visualization with default/custom settings
+    5. Adjust visualization settings (optional)
+    6. Download visualization as a SVG file
     """)
+
+    st.info("**Privacy Note:** All data processing happens in real-time. Your tree files and sequences are NOT stored on our servers. Refreshing the page will clear all uploaded data.")
+
+st.markdown("For more detailed instructions and examples, please reference the `About` page.")
 
 # Upon start, search for uploaded_tree.tre in current dir, or tree-file.png/pdf in data/ and clear
 def clear_files():
