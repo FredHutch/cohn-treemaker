@@ -415,6 +415,12 @@ Found a bug? Have a feature request? Please contact us via email with:
 - Example files (if relevant)
 """)
 
+st.markdown("### Acknowledgements/Citations")
+st.markdown("""
+1. Huerta-Cepas J, Serra F, Bork P. ETE 3: Reconstruction, Analysis, and Visualization of Phylogenomic Data. Mol Biol Evol. 2016 Jun;33(6):1635-8. doi: 10.1093/molbev/msw046. Epub 2016 Feb 26. PMID: 26921390; PMCID: PMC4868116.
+2. Streamlit v1.43.0 (https://streamlit.io). Copyright 2026 Snowflake Inc
+""")
+
 # Footer
 st.markdown("---")
 st.caption("Koalafy - Tree Visualizer v1.0 | Cohn Lab @ Fred Hutchinson Cancer Center | Last Updated: January 2025")
